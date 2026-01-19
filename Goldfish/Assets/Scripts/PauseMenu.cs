@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using UnityEngine.Windows;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -12,17 +14,37 @@ public class PauseMenu : MonoBehaviour
     [SerializeField] float backgroundSoundVolume = 0.15f;
     [SerializeField] RawImage fadeImage;
     RawImage pauseMenuiImage;
+    PlayerControlls playerInput;
 
 
     private void Awake()
     {
         pauseMenuiImage = GetComponent<RawImage>();
+        playerInput = new PlayerControlls();
     }
 
     private void Start()
     {
         pauseMenu.SetActive(false);
     }
+
+    private void OnEnable()
+    {
+        playerInput.Enable();
+        playerInput.PlayerInput.Pause.performed += OnPause;
+    }
+
+    private void OnDisable()
+    {
+        playerInput.PlayerInput.Pause.performed -= OnPause;
+        playerInput.Disable();
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        TogglePauseMenu();
+    }
+
     public void TogglePauseMenu()
     {
         pauseMenu.SetActive(!pauseMenu.activeSelf);

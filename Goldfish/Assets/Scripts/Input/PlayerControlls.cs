@@ -44,6 +44,15 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""c8e79bf4-a70e-448c-8042-e0bf7fc6578f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -79,6 +88,17 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
                     ""action"": ""Tap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""12f45026-3bcc-48c4-ba95-84a65b4af39d"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -89,6 +109,7 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
         m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
         m_PlayerInput_ClickAndPoint = m_PlayerInput.FindAction("ClickAndPoint", throwIfNotFound: true);
         m_PlayerInput_Tap = m_PlayerInput.FindAction("Tap", throwIfNotFound: true);
+        m_PlayerInput_Pause = m_PlayerInput.FindAction("Pause", throwIfNotFound: true);
     }
 
     ~@PlayerControlls()
@@ -157,12 +178,14 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
     private List<IPlayerInputActions> m_PlayerInputActionsCallbackInterfaces = new List<IPlayerInputActions>();
     private readonly InputAction m_PlayerInput_ClickAndPoint;
     private readonly InputAction m_PlayerInput_Tap;
+    private readonly InputAction m_PlayerInput_Pause;
     public struct PlayerInputActions
     {
         private @PlayerControlls m_Wrapper;
         public PlayerInputActions(@PlayerControlls wrapper) { m_Wrapper = wrapper; }
         public InputAction @ClickAndPoint => m_Wrapper.m_PlayerInput_ClickAndPoint;
         public InputAction @Tap => m_Wrapper.m_PlayerInput_Tap;
+        public InputAction @Pause => m_Wrapper.m_PlayerInput_Pause;
         public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -178,6 +201,9 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
             @Tap.started += instance.OnTap;
             @Tap.performed += instance.OnTap;
             @Tap.canceled += instance.OnTap;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
         }
 
         private void UnregisterCallbacks(IPlayerInputActions instance)
@@ -188,6 +214,9 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
             @Tap.started -= instance.OnTap;
             @Tap.performed -= instance.OnTap;
             @Tap.canceled -= instance.OnTap;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
         }
 
         public void RemoveCallbacks(IPlayerInputActions instance)
@@ -209,5 +238,6 @@ public partial class @PlayerControlls: IInputActionCollection2, IDisposable
     {
         void OnClickAndPoint(InputAction.CallbackContext context);
         void OnTap(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
 }
